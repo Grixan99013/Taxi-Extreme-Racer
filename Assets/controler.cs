@@ -11,10 +11,10 @@ public class Сontroler : MonoBehaviour
     public Transform reardr, rearpas;
 
     public float _steerAngle;
-    public float _motorForce; 
+    public float _motorForce;
 
     public float steerAngl;
-    float h, v;
+    float h, v, speed;
     float wheelRPM;
 
     public GameObject centerOfMass;
@@ -43,11 +43,9 @@ public class Сontroler : MonoBehaviour
     {
         rigBody = GetComponent<Rigidbody>();
         rigBody.centerOfMass = centerOfMass.transform.localPosition;
-
-        torqueCurve = new AnimationCurve(new Keyframe(minRPM, _motorForce), 
-                                         new Keyframe(maxRPM / 2, _motorForce * 1.5f), 
-                                         new Keyframe(maxRPM, _motorForce));
         _currentGear = 1;
+        // Инициализируем кривую один раз при старте
+        UpdateTorqueCurve(_motorForce);
     }
 
     void FixedUpdate()
@@ -65,8 +63,29 @@ public class Сontroler : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         DisplayGear();
+        speed = rigBody.velocity.magnitude * 4.5f;
         DisplaySpeed();
         
+    }
+
+    // Кэшированное значение — не пересчитываем кривую, если сила не изменилась
+    private float _cachedMotorForce = float.MinValue;
+
+    public void UpdateTorqueCurve(float newMotorForce)
+    {
+        // Пересчитываем только при реальном изменении _motorForce.
+        // Ранее этот метод вызывался каждый FixedUpdate и создавал
+        // new AnimationCurve(...) ~50 раз в секунду — лишние аллокации для GC.
+        if (Mathf.Approximately(_cachedMotorForce, newMotorForce)) return;
+
+        _cachedMotorForce = newMotorForce;
+        _motorForce = newMotorForce;
+
+        torqueCurve = new AnimationCurve(
+            new Keyframe(minRPM, _motorForce),
+            new Keyframe(maxRPM / 2, _motorForce * 1.5f),
+            new Keyframe(maxRPM, _motorForce)
+        );
     }
 
     void Inputs()
@@ -77,7 +96,6 @@ public class Сontroler : MonoBehaviour
 
     void DisplaySpeed()
     {
-        float speed = rigBody.velocity.magnitude * 4.5f;
         _printSpeed.text = speed.ToString("0");
     }
 

@@ -507,6 +507,13 @@ MonoBehaviour:
   collisionLayers:
     serializedVersion: 2
     m_Bits: 384
+  detectionDistance: 15
+  stopDistance: 5
+  detectionWidth: 2
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 384
+  brakeForce: 1
   speedToWheelRotation: 0.3
 --- !u!114 &4374889085728123923
 MonoBehaviour:
@@ -524,17 +531,22 @@ MonoBehaviour:
   - visualModel: {fileID: 7795870332599121360}
     isSteering: 0
     currentRotation: 0
+    currentSteeringAngle: 0
   - visualModel: {fileID: 2906367143094312767}
     isSteering: 0
     currentRotation: 0
+    currentSteeringAngle: 0
   - visualModel: {fileID: 8711416548220063713}
     isSteering: 0
     currentRotation: 0
+    currentSteeringAngle: 0
   - visualModel: {fileID: 372942861923625704}
     isSteering: 0
     currentRotation: 0
+    currentSteeringAngle: 0
   maxSteeringAngle: 35
   rotationMultiplier: 50
+  steeringSmoothing: 10
 --- !u!1 &8982553012028676234
 GameObject:
   m_ObjectHideFlags: 0

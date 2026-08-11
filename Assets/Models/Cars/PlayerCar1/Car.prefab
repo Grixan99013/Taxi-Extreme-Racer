@@ -509,6 +509,10 @@ MonoBehaviour:
   maxDamage: 15
   smokeThreshold: 50
   repairCostPerHP: 10
+  isSmokeActive: 0
+  isInRepairZone: 0
+  carController: {fileID: 8487807015128926433}
+  originalMotorForce: 0
 --- !u!114 &581756749652350386
 MonoBehaviour:
   m_ObjectHideFlags: 0

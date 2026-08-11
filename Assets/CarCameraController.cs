@@ -3,38 +3,51 @@ using UnityEngine.SceneManagement;
 
 public class CarCameraController : MonoBehaviour
 {
-    public Camera mainCamera;        // Основная камера (обычный вид)
-    public Camera frontViewCamera;   // Камера вида спереди
-    public Camera menuCamera;        // Камера для меню
-    public Transform carTarget;      // Цель (машина), вокруг которой вращаемся
+    public Camera mainCamera;        
+    public Camera frontViewCamera;   
+    public Camera menuCamera;        
+    public Transform carTarget;      
     
     [Header("Menu Camera Orbit Settings")]
-    public float rotationSpeed = 5f; // Скорость вращения
-    public float distance = 5f;      // Дистанция от камеры до машины
-    public float height = 1.5f;      // Высота камеры относительно машины
-    public float minVerticalAngle = -20f; // Минимальный угол наклона
-    public float maxVerticalAngle = 45f;  // Максимальный угол наклона
+    public float rotationSpeed = 5f; 
+    public float distance = 5f;      
+    public float height = 1.5f;      
+    public float minVerticalAngle = -20f; 
+    public float maxVerticalAngle = 45f;  
     
     private float currentX = 0f;
     private float currentY = 0f;
     private Vector3 initialOffset;
 
+    // Счётчик, а не bool: если когда-нибудь откроется сразу несколько панелей поверх друг друга
+    // (например, задания + подтверждение покупки), камера останется заблокированной,
+    // пока не закроется последняя из них.
+    private int blockingPanelsOpen = 0;
+
+    /// <summary>
+    /// Вызывается UI-панелями (например QuestListUI, OrderHistoryUI) при открытии/закрытии,
+    /// чтобы вращение камеры мышью не работало "сквозь" открытую панель.
+    /// </summary>
+    public void SetCameraRotationBlocked(bool blocked)
+    {
+        blockingPanelsOpen = Mathf.Max(0, blockingPanelsOpen + (blocked ? 1 : -1));
+    }
+
     private void Start()
     {
-        // Инициализация углов вращения
+ 
         if (menuCamera != null && carTarget != null)
         {
             initialOffset = menuCamera.transform.position - carTarget.position;
             distance = initialOffset.magnitude;
             height = initialOffset.y;
             
-            // Вычисляем начальные углы
             Vector3 flatOffset = new Vector3(initialOffset.x, 0, initialOffset.z);
             currentX = Vector3.SignedAngle(Vector3.forward, flatOffset, Vector3.up);
             currentY = Vector3.Angle(flatOffset, initialOffset);
         }
 
-        // Автоматически определяем режим при старте
+
         bool isMenuScene = SceneManager.GetActiveScene().name == "CarMenu";
         SetMenuMode(isMenuScene);
     }
@@ -98,6 +111,7 @@ public class CarCameraController : MonoBehaviour
     private void HandleMenuCameraRotation()
     {
         if (carTarget == null) return;
+        if (blockingPanelsOpen > 0) return;
 
         if (Input.GetMouseButton(0))
         {
@@ -113,12 +127,12 @@ public class CarCameraController : MonoBehaviour
     {
         if (carTarget == null) return;
 
-        // Вычисляем новую позицию камеры
+
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
         Vector3 offset = new Vector3(0, height, -distance);
         Vector3 position = carTarget.position + rotation * offset;
 
-        // Обновляем позицию и поворот камеры
+
         menuCamera.transform.position = position;
         menuCamera.transform.LookAt(carTarget.position + Vector3.up * height * 0.5f);
     }

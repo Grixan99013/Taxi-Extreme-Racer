@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8921709046207014781}
   - component: {fileID: 1018424521621433933}
   - component: {fileID: 9070312880125429664}
+  - component: {fileID: 4198470190391959406}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -78,10 +79,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypoints: []
   reachDistance: 1
-  maxSpeed: 50
-  minSpeed: 15
+  maxSpeed: 30
+  minSpeed: 10
   acceleration: 4
-  deceleration: 4
+  rotationSpeed: 5
+  destroyDelay: 15
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 384
+  detectionDistance: 15
+  stopDistance: 5
+  detectionWidth: 2
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 384
+  brakeForce: 1
+  speedToWheelRotation: 0.3
+--- !u!114 &4198470190391959406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204502125707535214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8742464185e9ba4994daeec38fc5a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheels: []
+  maxSteeringAngle: 35
+  rotationMultiplier: 50
+  steeringSmoothing: 10
 --- !u!1 &785466983137132695
 GameObject:
   m_ObjectHideFlags: 0

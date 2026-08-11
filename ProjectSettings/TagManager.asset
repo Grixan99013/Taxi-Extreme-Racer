@@ -8,6 +8,9 @@ TagManager:
   - PurpleCheckpoint
   - Car
   - RepairZone
+  - Barrier
+  - BalanceText
+  - ExpSlider
   layers:
   - Default
   - TransparentFX
